@@ -105,15 +105,30 @@ Keypairs can be seen in the **Keys** tab.
 
 The **Active** and **Passive** sub-tabs show the current active key and the
 passivated keys. It's recummended to regurarly rotate the keys.
+
+##### Adding keypairs
 To add a new keypair click on the **Providers** sub-tab and then select from
 the **Add keystore...** menu the correct provider. Select **rsa-generated** to
 create a new RSA keypair. Configure the key priority to the desired value.
 Active keypair can coexist in a Realm and the keypair with the highest priority
 will be used.
 
-![Add RSA provider](images/add-rsa-provider.png)
+![Add rsa-generated provider](images/add-rsa-generated-provider.png)
 
 Existing keypairs can be passivated or disabled by configuring their provider.
+
+##### Uploading keypairs
+Keypairs and certificates can also be uploaded manually by selecting the **rsa**
+provider and choosing the private key and X509 certificate to upload:
+
+![Add rsa provider](images/add-rsa-provider.png)
+
+##### Loading keys from Java keystores
+Keypairs and certificates stored in a Java Keystore can be uploaded using the
+**Keystore** provider and by passing the keys file, along with the Keystore
+password, key alias and password.
+
+![Add keystore provider](images/add-keystore-provider.png)
 
 #### Ream Themes
 After creating a Realm themes can be customized.
@@ -178,3 +193,51 @@ settings. The password can be set as **Temporary** to force the change upon next
 user login.
 
 ![User credentials](images/user-credentials.png)
+
+#### User OTP configuration
+Administrators can force users to setup two-factor authentication using an
+OTP application like [FreeOTP](https://freeotp.github.io/) or Google Authenticator.
+Users must install either one of this apps in order to autheticate using 2FA.
+
+In RH-SSO this task involves the intervention of the user to setup for the first time
+the OTP app by scanning a provided QR code.
+Administrators can force users to complete this task upon first login using the
+**Configure OTP** Required Used Action.
+
+![Require OTP](images/user-require-otp.png)
+
+When the user first logs in the Mobile Authenticator Setup screen will appear
+asking to scan the QR code with the phone camera and generate a one time code.
+
+![Configure OTP](images/user-configure-otp.png)
+
+The Realm OTP policy can be configured in **Authentication** -> **OTP Policy**.
+Here administrators can setup the OTP Type, Hash Algorithm, the number of
+generated digits and the token period.
+
+![OTP Policy](images/authentication-otp-policy.png)
+
+#### User Self-registration
+Red Hat Single Sign-On can be configured to allow user self-registration in the
+defined Realm. To enable it enable the `User registration` switch in **Realm
+Settings** -> **Login**.
+
+![User self-registration](images/user-self-registration.png)
+
+ This action will enable a **Register** link in the login page.
+
+![Registration form](images/user-registration-form.png)
+
+#### Password Recovery
+Administrators can let Realm users recover their passwords by enabling the
+option `Forgot password` under **Realm Settings** -> **Login**.
+
+![Password Reset](images/user-password-reset.png)
+
+The message sent to the user will include a link to reset the credentials.
+The text of the email message is totally customizable by editing the email theme.
+
+Administrators can manage the behavior of credentials reset under **Authentication**
+-> **Flows** in the `Reset Credentials` dropdown menu item.
+
+![Reset Flow](images/reset-credentials-flow.png)
