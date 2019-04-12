@@ -10,11 +10,12 @@ RH-SSO provides advanced features like Identity Brokering, to integrate
 with 3rd party Identity Providers, User Federation for LDAP/AD integration, and
 can be managed using REST API, a web administration console and CLI.
 
-Current documentations is developed for RH SSO 7.3 and verified on this release.
+Current documentations is developed for **RH Signle Sign-On 7.3**. Examples and contents were produces from this release.
 
 ### Sections
 [Installation and Configuration](InstallConfig.md)  
 [Administration](Administration.md)
+[Deployment on OpenShift](OpenShiftDeploy.md)
 
 ### Maintainer                                                                  
 - Giovan Battista Salinetti   
