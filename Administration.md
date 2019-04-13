@@ -169,8 +169,11 @@ The `Requires User Actions` fields is a set of actions done when the user logs
 in:
 
 - **Verify email** sends an email to the user to verify his/her address.
+
 - **Update profile** forces user to update his/her profile upon first login.
+
 - **Update password** forces user to update the password.
+
 - **Configure OTP** forces OTP configuration after first login.
 
 Default required actions can be enabled/dsabled by clicking the **Authentication**
@@ -182,7 +185,9 @@ Newly created users will appear in the main Users tab. For every user the Realm
 administrator can choose the following actions:
 
 - `Edit` to modify the user settings.
+
 - `Impersonate` to become the user for testing purposes.
+
 - `Delete` to remove the user.
 
 ![User actions](images/delete-user.png)
@@ -196,23 +201,35 @@ user login.
 
 A very important feature is the management of the password policy in RH-SSO.
 Administrators can setup the following policies in every Realm:
+
 - **Expire Password**: password expiry date. Default value is 365 days.
+
 - **Hashing Iterations**: number of hashing iterations. Default value is 27500.
+
 - **Special Characters**: number of mandatory special characters. Default value
   is 1.
+
 - **Not Recently Used**: number of recently used passwords to reject. Default
   value is 3.
+
 - **Uppercase Characters**: number of mandatory uppercase characters. Default
   value is 1.
+
 - **Lowercase Character**: number of mandatory lowercase characters. Default
   value is 1.
+
 - **Password Blacklist**: the name of the password blacklist file, expected
   under `${jboss.server.data.dir}/password-blacklists`. Default is empty.
+
 - **Minimum length**: the password minimum length. Default value is 8 characters.
+
 - **Regular Expression**: a regexp that must be matched by passwords. Default is
   empty.
+
 - **Digits**: the number of mandatory ditigs. Default value is 1.
+
 - **Not Username**: avoid using the username as a password. No defaults.
+
 - **Hashing Algorithm**: the algorithm used for password hashing. Default value
   is **_pbkdf2-sha256_**.
 
@@ -279,8 +296,10 @@ Hat Single Sign-On.
 #### OpenID Connect
 **OpenID Connect** (OIDC) is an authentication protocol that extends the **OAuth2**
 protocol. OIDC can be synthetized in two main authentication scenarios:
+
 - An application asks to an OIDC capable provider to authenticate a user for
   it and receives 2 tokens. On success it receives an **identity token** containing informations about the user identity and an **access token** containing access informations and authorizations. The latter is digitally signed by the realm.
+
 - A client asking access to remote services and receives an **access token** it
   can use to invoke the remote services via REST invocations. The access token
   is digitally signed by the realm. When a user tries to access the REST service
@@ -289,6 +308,7 @@ protocol. OIDC can be synthetized in two main authentication scenarios:
   by the token.
 
 Basically OIDC auth flows can be restricted to 4 different kinds:
+
 1. **Authorization Code Flow**, used by browsers authentications. When a browser
 visits an application is redirected to RH-SSO. In the redirection a **callbak URL**
 is passed as a query parameter to be used after authentication to redirect the
@@ -328,13 +348,16 @@ and mappings - or by clients who need to authenticate to remote services.
 
 They way SAML assertions are exchanged is defined by **SAML Bindings**. There are
 three kind of bindings covered here:
+
 - **Redirect Binding**, which uses a series of redirects from the applications to
   the SSO server and back to the application passing XML payloads as query
   parameters and digitally signing them. It uses HTTP GET methods to pass data.
   This binding is used in web browser sessions.
+
 - **POST Bindings**, similar to the Redirect Bindings but uses HTTP POST methods
   to pass payloads. This is also used in web browser sessions and leverages on
   JavaScript code to manage the POST requests.
+
 - **ECP Binding**, used in non-browser sessions by REST or SOAP clients.
 
 All of the above bindings use the endpoint `/realms/{realm-name}/protocol/saml`.
@@ -352,7 +375,7 @@ configured clients:
 
 ![Client list](images/list-client.png)
 
-#### Example 1: Manual configuration of an OIDC client
+#### Manual configuration of an OIDC client
 To define a new client click on the `Create` button:
 
 ![Client create](images/add-client.png)
@@ -373,21 +396,31 @@ customization of the client is often required.
 ![Client summary](images/summary-demo-client.png)
 
 The following list highlights some of the most common fields:
+
 - **Client ID**, the name provided in the first creation window.
+
 - **Name**, the display name of the client in RH-SSO UI screen.
+
 - **Enabled**, to toggle the client on or off.
+
 - **Consent Required**, to ask the user to grant access to the application.
+
 - **Access Type**, which has 3 possible options:
+
   - **_Confidential_**: Used by clients capable of maintaining the confidentiality
     of their credentials and based on a client secret to initiate the login
     protocol. When this access type is choosen a new **Credentials** tab is
     enabled.
+
   - **_Public_**: Used by client which don't require a secret and are not capable
     of secure authentication.
+
   - **_Bearer-Only_**: The application allow bearer token requests only. Useful
     for CLI tools that require a bearer token to pass to users to esecute API
     calls or web services that never initiate a browser login.
+
 - **Root URL**: The URL to prepend to relative endpoints.
+
 - **Valid Redirect URIs**: A list of accepted redirection. By default, when a
   Root URL is defined during client creation, this is configured with a
   wildcard value.   
@@ -395,8 +428,10 @@ The following list highlights some of the most common fields:
   default redirection will be http://localhost:8080/demo/* and every pattern
   will be accepted. This configuration has potential security issues thus
   enabling puntual redirections is a better choice.
+
 - **Admin URL**: Used by RH-SSO only on client specific adapters as a callback
   URL for administrative tasks.
+
 - **Web Origins**: Enables support for **CORS** (Cross Origin Resource Sharing)
   request for the domains defined in the list.
 
@@ -419,8 +454,8 @@ the **keycloak-quickstarts**:
     "publicClient": false,
     "secret": "secret",
     "serviceAccountsEnabled": true,
-    "authorizationServicesEnabled": true
-}
+    "authorizationServicesEnabl`d": true
+}`
 ```
 
 Before importing any customization can be applied to the file. Otherwise,
@@ -430,4 +465,280 @@ regeneation in the **Credentials** tab.
 
 #### Credentials tab
 The Credentials tab is enabled when **confidential** access type is choosen.
-Administrators can configure 
+Administrators can configure 4 types of client authentication mechanisms:
+
+- **Client Id and Secret**: the default behavior. Secure clients pass their id
+  and the secret, calculated from the server and provided to clients upon
+  registration. This secret is used as a symmetric key to encrypt exchanges
+  between client and server. The secret is never transferred and uses HMAC
+  algorithm for key exchange encryption but there is no signature verification.
+  The secret is dynamically generated by the server and can be regenerated.
+
+- **Signed JWT**: When a more robust approach is needed and symmetric key
+  encryption is not an option the Signet JWT autheticator can be choosen. This
+  approach is more CPU intensive. It is based on **JSON Web Tokens** and the RSA algorithm to sign the tokens. For this reason a private key and a certificate
+  must be generated. The private is used to sign the JWT and the certificate to
+  verify the signature. The private key will be stored in a JKS file offered for
+  download and the certificate will be stored in RH-SSO database.
+  External tools can be used and certificate import is possible.
+
+- **Signed JWT and Secret**: The JWT is signed with a symmetric secret instead
+  of the private key.
+
+- **X509 Certificate**: The client must use an X509 certificate during TLS
+  handshake. The subject DN can be checked using regular expressions. To accept
+  all certificates, use the regexp `(.*?)(?:$)` to match every DN.
+
+### Manual configuration of a SAML client
+To add as SAML client use the same approach as in the OIDC client and select
+**saml** in the **Client Protocol** field.
+The **Client SAML Endpoint** will be the URL where RH-SSO will exchange requests
+and responses with the application.
+
+![SAML client](images/add-client-saml.png)
+
+The configuration page of a SAML client has different paramentes, compared to
+the OIDC client.
+
+![SAML summary](images/summary-saml-client.png)
+
+Some fields deserve a better explaination:
+
+- **Client ID**: this is the ID that must match the value sent by the issuer
+  with the SAML Authn request.
+
+- **Include AuthnStatement**: enables the inclusion of Authn statements to
+  display the authentication method and timestamp in the response document.
+
+- **Sign Documents**: to sign the documents with the realm's private key.
+
+- **Optimize REDIRECT signing key lookup**: enable the inclusion in SAML protocol
+  messages of RH-SSO native extension that contains a hint with signing key ID.
+
+- **Sign Assertions**: Sign the assertion and embed it with SAML XML Auth response.
+
+- **Signature Algorithm**: the algorithm used for the signature.
+
+- **SAML Signature Key Name**: the content of the **KeyName** field in the
+  SAML documents sent by POST bindings. Three options between **Key_ID**,
+  **CERT_SUBJECT** and **NONE**.
+
+- **Encrypt Assertions**: enables the encryption of assertions in SAML documents
+  using the realm's private key and AES algorithm.
+
+- **CLient Signature Required**: with this option enabled the clients must sign
+  their SAML requests.
+
+- **Force POST Binding**: force the POST binding even if the origin request was
+  was a Redirect binding. By default the response is on the same kind of binding
+  as the request.
+
+- **Front Channel Logout**: when enabled require a browser redirect to logout.
+
+- **Force Name ID Format**: Force the NameID format defined in the admin console.
+
+- **Name ID Format**: The name ID format to be used for the subject. Options are:
+  - **_username_**
+  - **_email_**
+  - **_transient_**
+  - **_persistent_**
+
+- **Root URL**: the root URL prepended to relative URLs.
+
+- **Valid Redirect URIs**: a list of valid URL a browser can redirect to after
+  successful login. It accepts relative paths and simple wildcards at the end of
+  the URL (like `http://localhost:8080/demo/*`)
+
+- **Base URL**: default URL used when the auth server needs to redirect or link
+  back to the client.
+
+- **Master SAML Processing URL**: used for binding to both the SP's **Assertion
+  Consumer** and **Single Logout Services**. Fine grained settings can be
+  passed in the **Fine Grain SAML Endpoint Configuration** section.
+
+### Client Adapters Configuration
+Once defined in Red Hat Single Sign-On client adapter must be configured in the
+**Installation** section.
+
+Native client adapters can be downloaded and installed in the own application server and
+are available for both OIDC and SAML. Client adapter can ben generic **Java
+Client Adapters** or platform specific. For example, JBoss EAP client adapters
+are available in both zip, tar.gz o rpm format.
+Once installed the adapters can be configured to handle specific applicatinos
+using the configuration generated in the **Installation** section of the OIDC or SAML client. Generated configuration can be in JSON format or XML format for
+platform specific adapters.
+
+#### Example: Configuring the JBoss EAP adapter
+The following example shows how to install and configure the JBoss EAP client
+adapter from a zip file.
+
+##### Download and install
+Download the client adapter and place it in the JBoss EAP home directory (the root
+installation path of EAP).
+
+```
+cd $EAP_HOME
+unzip rh-sso-7.3.0.GA-eap7-adapter.zip
+```
+
+The archive will place jar files, docs and scripts (CLI batch files) in the **bin**,
+**docs** and **modules** directory.
+
+Once extracted the adapter must be configured to setup the related **extension**,
+and the **Elytron** SecurityRealm related to SSO.
+
+If no EAP instance is running execute the following command:
+
+```
+$ $EAP_HOME/bin/jboss-cli.sh --file=bin/adapter-elytron-install-offline.cli
+```
+
+The above script works with EAP 7.1 and newer.
+If the EAP version is 7.0 Elytron is not installed and the old Security subsystem
+must be configured with this alternate CLI batch:
+
+```
+$ $EAP_HOME/bin/jboss-cli.sh --file=bin/adapter-install-offline.cl
+```
+
+If there are running instances launch the online versions.
+
+For **EAP 7.1 and newer**:
+```
+$ $EAP_HOME/bin/jboss-cli.sh --file=bin/adapter-elytron-install.cli
+```
+
+And for **EAP 7.0**:
+```
+$ $EAP_HOME/bin/jboss-cli.sh --file=bin/adapter-install.cli
+```
+
+##### Application Configuration
+Besiedes the SecurityRealm configuration the most important change provided by
+the above command is the installation of a new extension based on the module
+`org.keycloak.keycloak-adapter-subsystem` and the related subsystem.
+
+To configure a client in this subsystem download the installation code from
+the **Client** config page in RH-SSO. For example, if a OIDC client is configured
+select **Keycloak OICD JBoss Subsystem XML** format:
+
+![OIDC Client Install](images/oidc-client-eap-install.png)
+
+Download the XML file or copy the generated text.
+The copied text must be inserted in the **Keycloak** subsystem configuration in
+the EAP XML files (standalone or domain):
+
+```
+<profile>
+  <subsystem xmlns="urn:jboss:domain:keycloak:1.1">
+     <secure-deployment name="WAR MODULE NAME.war">
+        <realm>training</realm>
+        <auth-server-url>http://localhost:8080/auth</auth-server-url>
+        <public-client>true</public-client>
+        <ssl-required>EXTERNAL</ssl-required>
+        <resource>demo-app</resource>
+     </secure-deployment>
+  </subsystem>
+</profile>
+```
+
+**IMPORTANT:** Note the **WAR MODULE NAME.war** name in the `secure-deployment`
+field. The generic name must be update with the real application name. For example,
+if the deployed application we need to secure is called `HelloWorld.war` this
+name will replace the above mentioned default value.
+
+Multiple deployments can also the same Realm in the configuration:
+```
+<subsystem xmlns="urn:jboss:domain:keycloak:1.1">
+    <realm name="demo">
+        <auth-server-url>http://localhost:8080/auth</auth-server-url>
+        <ssl-required>external</ssl-required>
+    </realm>
+    <secure-deployment name="customer-portal.war">
+        <realm>demo</realm>
+        <resource>customer-portal</resource>
+        <credential name="secret">password</credential>
+    </secure-deployment>
+    <secure-deployment name="product-portal.war">
+        <realm>demo</realm>
+        <resource>product-portal</resource>
+        <credential name="secret">password</credential>
+    </secure-deployment>
+    <secure-deployment name="database.war">
+        <realm>demo</realm>
+        <resource>database-service</resource>
+        <bearer-only>true</bearer-only>
+    </secure-deployment>
+</subsystem>
+```
+
+##### Code Annotations:
+From the application point of view, an EJB that must use the Keycloak
+Security Domain must embed the `@SecurityDomain("keycloak")` annotation:
+
+```
+import org.jboss.ejb3.annotation.SecurityDomain;
+...
+
+@Stateless
+@SecurityDomain("keycloak")
+public class CustomerService {
+
+    @RolesAllowed("user")
+    public List<String> getCustomers() {
+        return db.getCustomers();
+    }
+}
+```
+
+##### Web deployment auth method
+Once updated from the code point of view, the deployment descriptor named `web.xml`
+must updated with tne new auth method by setting up the **security-constraint**
+section. The following is an example of a secured `web.xml`:
+
+```
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0">
+
+    <module-name>application</module-name>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Admins</web-resource-name>
+            <url-pattern>/admin/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Customers</web-resource-name>
+            <url-pattern>/customers/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>KEYCLOAK</auth-method>
+        <realm-name>this is ignored currently</realm-name>
+    </login-config>
+
+    <security-role>
+        <role-name>admin</role-name>
+    </security-role>
+    <security-role>
+        <role-name>user</role-name>
+    </security-role>
+</web-app>
+```
