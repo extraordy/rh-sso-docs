@@ -289,6 +289,50 @@ Administrators can manage the behavior of credentials reset under **Authenticati
 
 ![Reset Flow](images/reset-credentials-flow.png)
 
+### Groups Management
+Users can be member of zero or more group in the Realm and by being member they
+inherit the group role mappings.
+Groups can be organized in a hierarchical way by creating parent groups and
+subgroups as children. If a user belongs to a subgroup, it inherits all the
+attributes and role mappings of the parent.
+To add a new group select the left menu item `Groups` and click on the `New`
+button and choose a unique group name to create the group.
+
+![Add Group](images/groups-add.png)
+
+The new group can be configured by setting **Attributes**, **Role Mappings**.
+The **Members** tab only shows the current members, which must be configured
+per user.
+
+![Config Group](images/group-config.png)
+
+To create a subgroup select the parent gruop in the main **Groups** list and
+click the `New` button:
+
+![Add Subgroup](images/group-add-subgroup.png)
+
+The new subgroup will appear as a child item of the parent:
+
+![Subgroup View](images/group-subgroup-view.png)
+
+#### Assign Users to Groups
+To assign users to a group go `Users` -> *user ID* -> `Grups` and select the
+desired group(s) from the **Available Groups** list and click `Join`. The
+group will appear in the **Group Membership** list.
+
+![Group Membership](images/group-user-membership.png)
+
+To avoid editing groups on large sets of users administrators can define
+**Default Groups** that will be automatically assigned to avery new user created.
+
+To populate the list of default groups go to the  `Default Groups` tab from the
+`Groups` menu, select the desired groups from the **Available Groups** list
+and click `Add.`
+
+![Default Groups](images/default-group.png) 
+
+
+
 ### Protocols Overview
 This section shows how to manage **OIDC** clients and **SAML** clients in Red
 Hat Single Sign-On.
@@ -742,3 +786,115 @@ section. The following is an example of a secured `web.xml`:
     </security-role>
 </web-app>
 ```
+
+### Client Scopes
+Clients inherit the configured Realm **Client Scopes**. Every time a new Realm is
+created, some builtin client scopes are generated. Administrators can manage them
+by selecting the `Client Scopes` left menu item.
+
+![Client scopes](images/realm-client-scopes.png)
+
+Default client scopes are generated for OIDC and SAML compliancy, most of them
+being related to OIDC protocol. When a new client scope is created it can be
+added to Default client scopes in the `Default Client Scopes` tab.
+
+When setting up a new client the related protocol scopes are automatically
+inherited and can be seen in the client tab `Client Scopes`.
+
+The following example shows a SAML client inherited scopes:
+
+![SAML Inherited Scopes](images/saml-inherited-scopes.png)
+
+**IMPORTANT**:
+**What Client Scopes do?** Their purpose is to hold **Protocol Mappers** and
+**Role Scope Mappings**.
+
+#### Protocol Mappers
+When an application receives a Token or a SAML assertion it may want to receive
+some specific user metadata and roles. For example, thins like **phone**, **email**,
+**verified email** can be mapped into the token or assertion.
+
+Mappers can be configure per-client for a fine grained customization or
+in custom Client Scopes to be linked to the client. When a client links to
+a client scope its protocol mappers are inherited. All client inherit the builtin
+client scopes defined for the specific protocl (OIDC/SAML).
+
+![Client Scopes Mappers](images/client-scopes-mappers.png)
+
+#### Scope Mappings
+Scope mappings define which roles mappings are included in the access token
+requested by the client. Both Realm defined Roles and Client defined Roles can
+be mapped in che Scope Mappings. This is a very useful feature to automtically
+embed specific roles in clients inheriting a client scope.
+
+![Scope Mappings](images/client-scopes-assigned-roles.png)
+
+#### Client Scopes Evaluation
+Client can also evaluate the linked client scopes in the `Evaluate` tab to test
+the effective Protocol Mappers and Role Scope Mappings.
+
+OIDC clients can also verify the content of the generated token for a given user.
+The following example shows the client scope evaluation for a *student* user:
+
+![Scopes Evaluation](images/client-scopes-evaluation.png)
+
+### Roles management
+Roles define specific behaviors and limits. They should not be confused with
+**Groups**, which are collections of **Users**. Roles are basically organized in two main categories:
+
+- **Realm Roles**, a Realm scoped namespace of Roles.
+- **Client Roles**, a client scoped namespace of Roles.
+
+Roles can be simple or **composite**, including other defined Roles.
+
+#### Adding Realm Roles
+To add ad Realm Role click on the `Roles` left menu item and then on the `Add Role`
+button.
+
+![Realm Roles](images/realm-roles.png)
+
+The **Role Name** field is mandatory in the Role Add panel:
+
+![Realm Role Add](images/realm-role-add.png)
+
+Once saved, the new Role can be customized with **Attributes** (key/value pairs)
+and **Users in Role**, users to be associated to the new role.
+
+![Realm Role Edit](images/realm-role-edit.png)
+
+#### Adding Client Roles
+Client Roles are more fine grained and related only to a specific client. To
+add a client role go to `Clients` -> *Client name* -> `Roles` and click the
+`Add Role` button.
+
+![Client Role Add](images/client-role-add.png)
+
+Define the mandatory **Role Name** field to continue:
+
+![Client Role Name](images/client-role-name.png)
+
+After creation the edit panel will be shown. Notice that there is no **Users in Role** tab here, since the role is only related to a specific client.
+
+![Client Role Edit](images/client-role-edit.png)
+
+#### Role Scope Mappings
+RH-SSO lets administrators define, for every client, the role scope mappings.
+By default when an OIDC access token is issued it contains all the scope mapppings
+of the user (**Full Scope**).
+Administrators can filter the mappings for a client and limit its privileges to
+a subset of roles.
+
+![Role Scope Mappings](images/role-scope-mappings.png)
+
+#### Mapping Users to Roles
+Realm administrator can map users to specific roles. To do this go to
+`Users` -> *user ID* -> `Role Mappings` and select the **Realm Roles** to map
+from the **Available Roles** list. New mapped roles will appear in the **Assigned
+Roles** list and in the **Effective Roles** non-editable list.
+
+![User Realm Role Mappings](images/user-realm-role-mappings.png)
+
+To map **Client Roles** select the desired client from the drop-down menu and
+add the role from the **Available Roles** list:
+
+![User Client Role Mappings](images/user-client-role-mappings.png)
