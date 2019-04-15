@@ -329,7 +329,7 @@ To populate the list of default groups go to the  `Default Groups` tab from the
 `Groups` menu, select the desired groups from the **Available Groups** list
 and click `Add.`
 
-![Default Groups](images/default-group.png) 
+![Default Groups](images/default-group.png)
 
 
 
@@ -898,3 +898,104 @@ To map **Client Roles** select the desired client from the drop-down menu and
 add the role from the **Available Roles** list:
 
 ![User Client Role Mappings](images/user-client-role-mappings.png)
+
+### User Storage Federation
+One of the most interesting features of Red Hat Single Sign-On is the **User
+Storage Federation** feature. When RH-SSO must integrate with pre-existing environment where users or groups are already defined in LDAP or Active Directory databases, it can federate with these external databases. When a user logs in to
+SSO the user is first searched in the Realm internal user store and, if not
+found, in all the federated providers.  
+Both OIDC token and SAML assertions can work perfectly with this scenario.
+When the external database cannot store all the metadata needed, RH-SSO can store
+some things locally (for exampke, OTP data).  
+
+The installation of Red Hat Single Sign-On already offers an LDAP/AD provider,
+available to immediate usage. **More than one LDAP provider can be configured
+in the same Realm**.
+
+By default RH-SSO will import users from LDAP into the local storage, anyway
+password are never stored locally. This feature can be disabled to force SSO
+to query the LDAP database always.
+
+To create a new user federation click on the `User Federation` left menu item
+and choose the desired provider:
+
+![User Federation](images/user-federation.png)
+
+####  Example: Active Directory federation
+To setup the LDAP federation, choose the ldap provider from the menu. The
+next page will contain all the configuration details of the provider.
+
+The following screenshot shows an **Active Directory** sample configuration:
+
+![AD Federation Config](images/ad-federation-config.png)
+
+Some of the most important fields are:
+
+-  **Enabled**: enables the provider. If disabled this provider won't be queried
+   for the user search.
+
+- **Console Display Name**: display name of the provider.
+
+- **Priority**: the search priority (lower number is higher priority) when
+  multiple providers are defined in the same Realm.
+
+- **Import Users**: automates the syncronization of users from the provider. If
+  disabled no user will be imported from the LDAP database to RH-SSO.
+
+- **Edit Mode**: defines the edit policy on the LDAP store. It supports 3
+  possible values:
+  - **READONLY**: fields like username, email, etc will be readonly and
+    unchangeable.
+  - **WRITABLE**: mapped attributes (even passwords) can be changed and will
+    be synced to the ldap store.
+  - **UNSYNCED**: mapped attributes can be changed but the changes will remain
+    in the Red Hat Single Sign-On local storage.
+
+- **Sync Registrations**: enables the syncronization of newly created users
+  in the LDAP store.
+
+- **Vendor**: a list of supported vendors. Values are **Active Directory**,
+  **Red Hat Directory Server**.
+
+- **Connection URL**: the connection URL of the LDAP server. To configure an
+  **_ldaps_** connection a **Truststore SPI** must be defined in the installation,
+  otherwise the connection will fail.
+
+- **Users DN**: the full DN where the users reside in the LDAP tree.
+
+- **Authentication Type**: can be **None** or **Simple**. With simple type
+  bind credentials must be provided.
+
+- **Bind DN**: used when **Authentication Type** is Simple. The DN of the bind
+  account used to performs the LDAP search.
+
+- **Bind Credential**: the password for the Bind DN.
+
+- **Search Scope**: can be **One Level** (search only on the User DN level) or
+  **Subtree** (search in subtrees under the User DN level).
+
+- **Validate Password Policy**: forces RH-SSO to validate passwords according to
+  the configured policy before updating them.
+
+- **Connection Pooling**: activate a connection pool to the LDAP server to
+  improve access performances.
+
+The Active Directory scenario provides a **Kerberos Integration** section where
+additional Kerberos configurations can be provided:
+
+- **Allow Kerberos authentication**: when enabled the following fields will
+  be displayed:
+  - **Kerberos Realm**: the name of the Kerberos Realm.
+  - **Server Principal**: the full name of the server principal.
+  - **Keytab**: path to the keytab file containing the server principal credentials.
+  - **Debug**: enable debug logging.
+- **Use Kerberos For Password Authentication**: use the kerberos login module to
+  authenticate against kerberos instead of authenticating against the LDAP server.
+
+The **Cache Settings** section defines the lifespan of caches used for this provider.
+The possible values in the **Cache Policy** menu are:
+- **DEFAULT**: follows the cache settings of the global cache.
+- **EVICT_DAILY**: defines a daily schedule for cache invalidation.
+- **EVICT_WEEKLY**: defines a weekly schedule to cache invalidation.
+- **MAX_LIFESPAN**: defines a time in milleseconds for a cache entry.
+- **NO_CACHE**: uses no cache at all.
