@@ -16,8 +16,9 @@ Current documentations is developed for **RH Signle Sign-On 7.3**. Examples and 
 [Installation and Configuration](InstallConfig.md)  
 [Administration](Administration.md)  
 [Admin CLI](AdminCLI.md)  
-[Admin REST API](AdminRestAPI.md)    
-[Deployment on OpenShift](OpenShiftDeploy.md)  
+[Admin REST API](AdminRestAPI.md)  
+[Implementing Custom SPI](CustomSPI.md)     
+[Deployment on OpenShift](OpenShiftDeploy.md)    
 
 ### Maintainer                                                                  
 - Giovan Battista Salinetti   
