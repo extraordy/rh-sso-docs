@@ -16,7 +16,8 @@ Current documentations is developed for **RH Signle Sign-On 7.3**. Examples and 
 [Installation and Configuration](InstallConfig.md)  
 [Administration](Administration.md)  
 [Admin CLI](AdminCLI.md)  
-[Deployment on OpenShift](OpenShiftDeploy.md)
+[Admin REST API](AdminRestAPI.md)    
+[Deployment on OpenShift](OpenShiftDeploy.md)  
 
 ### Maintainer                                                                  
 - Giovan Battista Salinetti   
@@ -26,5 +27,6 @@ Current documentations is developed for **RH Signle Sign-On 7.3**. Examples and 
 - [Red Hat Documentation on Single Sign-On](https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.3/)
 - [RH SSO 7.3 Supported Configurations](https://access.redhat.com/articles/2342861#Comp_7_3)
 - [RH SSO on OpenShift](https://developers.redhat.com/blog/2019/02/07/red-hat-single-sign-on-give-it-a-try-for-no-cost/)
+- [RH-SSO REST API Documentation](https://access.redhat.com/webassets/avalon/d/red-hat-single-sign-on/version-7.3/restapi/)
 - [Keycloak on GitHub](https://github.com/keycloak/keycloak)                       
 - [Keycloak Quickstarts](https://github.com/keycloak/keycloak-quickstarts)         
