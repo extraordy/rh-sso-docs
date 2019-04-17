@@ -6,37 +6,39 @@ RESTful web services.
 The goal is to remove the developer's burden of handling authentication in their
 application by relying on an external customizable solution.
 
-RH-SSO provides support for **SAML**, **OpenID Connect**, **oAuth2** identity
+RH-SSO provides support for **SAML 2.0**, **OpenID Connect**, **OAuth2** identity
 providers, social logins (Facebook, GitHub, Google, etc), **two-factor**
 authentication, user federation to sync with external ActiveDirectory, LDAP and Kerberos.
 
 RH-SSO is and **identity provider (IDP)** to clients that authenticate to a
-**Realm**. A Realm can be defined as a collection of users, roles, groups and
+**Realm**.
+A Realm can be defined as a collection of users, roles, groups and
 credentials.  
-**Federation** with extrenal identity providers (ie Facebook) is possible.
-Another very common scenario is the federation with LDAP or AD services for
-user credentials storage. RH-SSO can point to these services to validate
-provided credentials.
+**Federation** with external identity providers (ie Facebook, GitHub) is available.
+**User Storage Federation** is a very common scenario which leverages on the
+federation with LDAP or ActiveDirectory services which store user credentials and
+informations. RH-SSO can point to these services to validate provided credentials.
 
 ### First login
 When executed for the first time an administrative user in the **Master** Realm
 must be created. To do this, point to URL http://localhost:8080/auth from the
-node running the SSO instance. This redirection is available **only** when
-pointing to localhost.
+node running the SSO instance.
+This redirection is available **only** when the URL contains a reference to
+**localhost**.
 
 ![Welcome page](images/initial-welcome-page.png)
 
-If the localhost URL is not available the `.../bin/add-user-Keycloak.sh` script
+If the localhost URL is not available (when the server intefaces are bound to
+fixed ip addresses) the `.../bin/add-user-Keycloak.sh` script
 in the local installation path can be used to achieve the same result.
 
-When running in standalone mode the script must be executed passing the **realm**
+When running in standalone mode the command must be executed passing the **realm**
 name, username and password:
-
 ```
 $ .../bin/add-user-Keycloak.sh -r master -u <username> -p <password>
 ```
 
-The realm name must be **master**.
+In the above example the user is created in the default **master** realm.
 
 When running in domain mode one of the server instances must be pointed using the
 `--sc` flag:
@@ -162,10 +164,10 @@ every theme.
 ### User Management
 Users can be managed by clicking in the left menu `Users` item.
 By clicking on the `Add User` button a new user can be created. The only
-mandatory field is the **username**. Users cna be created **Enabled** by
-default or **Disabled**. Administrators can force the users to verify their
+mandatory field is the **username**. During creation users can be set **Enabled**
+or **Disabled**. Administrators can force the users to verify their
 email address or not with the `Email verified` boolean.
-The `Requires User Actions` fields is a set of actions done when the user logs
+The `Required User Actions` fields is a set of actions done when the user logs
 in:
 
 - **Verify email** sends an email to the user to verify his/her address.
@@ -390,7 +392,7 @@ between authentication servers and application, thus generating a lot more traff
 It can be used to authenticate users in applications, which receive from RH-SSO a **SAML assertion** - a digitally signed XML document containing user informations
 and mappings - or by clients who need to authenticate to remote services.
 
-They way SAML assertions are exchanged is defined by **SAML Bindings**. There are
+The way SAML assertions are exchanged is defined by **SAML Bindings**. There are
 three kind of bindings covered here:
 
 - **Redirect Binding**, which uses a series of redirects from the applications to
@@ -408,11 +410,11 @@ All of the above bindings use the endpoint `/realms/{realm-name}/protocol/saml`.
 
 ### Clients
 In Red Hat Single Sign-On clients are applications which request authentication
-for a users. They can be simple applications requesting SSO to provide an
-authentication backend or clients which need tokens to authenticate on external
-services. The configuration of clients is a critical part of RH-SSO administration.
-Anyway, defining new client in the administration console is easy and
-straight-forward.
+for a users. They can be **client-side** or **server-side** clients, from simple
+applications requesting SSO to provide an authentication backend or clients which
+need tokens to authenticate on external services. The configuration of clients is
+a critical part of RH-SSO administration. Anyway, defining new client in the
+administration console is easy and straight-forward.
 
 The client section is accessible from the left menu and displays a list of all
 configured clients:
@@ -454,10 +456,12 @@ The following list highlights some of the most common fields:
   - **_Confidential_**: Used by clients capable of maintaining the confidentiality
     of their credentials and based on a client secret to initiate the login
     protocol. When this access type is choosen a new **Credentials** tab is
-    enabled.
+    enabled. Server-side clients that need to perform a browser login use this
+    kind of access type.
 
-  - **_Public_**: Used by client which don't require a secret and are not capable
-    of secure authentication.
+  - **_Public_**: Used by client which don't require a secret and/or are not capable
+    of secure authentication. Standard client-side clients that perform a browser
+    login use this access type.
 
   - **_Bearer-Only_**: The application allow bearer token requests only. Useful
     for CLI tools that require a bearer token to pass to users to esecute API
@@ -480,10 +484,6 @@ The following list highlights some of the most common fields:
   request for the domains defined in the list.
 
 #### Importing from JSON
-To import a client from a JSON config click `Select File` and choose the file to
-be imported. The following example show a minimal client configuration took from
-the **keycloak-quickstarts**:
-
 ```
 {
     "clientId": "app-authz-vanilla",
@@ -504,7 +504,7 @@ the **keycloak-quickstarts**:
 
 Before importing any customization can be applied to the file. Otherwise,
 the client can be updated later in the Summary page.
-After import, additional configuration tasks can be applied. Like the secret
+After import, additional configuration tasks can be applied, for example the secret
 regeneation in the **Credentials** tab.
 
 #### Credentials tab
@@ -513,17 +513,18 @@ Administrators can configure 4 types of client authentication mechanisms:
 
 - **Client Id and Secret**: the default behavior. Secure clients pass their id
   and the secret, calculated from the server and provided to clients upon
-  registration. This secret is used as a symmetric key to encrypt exchanges
+  registration. This secret is used as an symmetric key to encrypt exchanges
   between client and server. The secret is never transferred and uses HMAC
   algorithm for key exchange encryption but there is no signature verification.
   The secret is dynamically generated by the server and can be regenerated.
 
 - **Signed JWT**: When a more robust approach is needed and symmetric key
   encryption is not an option the Signet JWT autheticator can be choosen. This
-  approach is more CPU intensive. It is based on **JSON Web Tokens** and the RSA algorithm to sign the tokens. For this reason a private key and a certificate
-  must be generated. The private is used to sign the JWT and the certificate to
-  verify the signature. The private key will be stored in a JKS file offered for
-  download and the certificate will be stored in RH-SSO database.
+  approach is more CPU intensive. It is based on **JSON Web Tokens** and the RSA
+  algorithm to sign the tokens. For this reason a private key and a certificate
+  must be generated. The private key is used to sign the JWT and the certificate
+  to verify the signature. The private key will be stored in a JKS file offered
+  for download and the certificate will be stored in RH-SSO database.
   External tools can be used and certificate import is possible.
 
 - **Signed JWT and Secret**: The JWT is signed with a symmetric secret instead
@@ -574,7 +575,7 @@ Some fields deserve a better explaination:
   their SAML requests.
 
 - **Force POST Binding**: force the POST binding even if the origin request was
-  was a Redirect binding. By default the response is on the same kind of binding
+  a Redirect binding. By default the response is on the same kind of binding
   as the request.
 
 - **Front Channel Logout**: when enabled require a browser redirect to logout.
@@ -609,7 +610,8 @@ are available for both OIDC and SAML. Client adapter can ben generic **Java
 Client Adapters** or platform specific. For example, JBoss EAP client adapters
 are available in both zip, tar.gz o rpm format.
 Once installed the adapters can be configured to handle specific applicatinos
-using the configuration generated in the **Installation** section of the OIDC or SAML client. Generated configuration can be in JSON format or XML format for
+using the configuration generated in the **Installation** section of the OIDC or
+SAML client. Generated configuration can be in JSON format or XML format for
 platform specific adapters.
 
 #### Example: Configuring the JBoss EAP adapter
@@ -717,7 +719,7 @@ Multiple deployments can also the same Realm in the configuration:
 ```
 
 ##### Code Annotations:
-From the application point of view, an EJB that must use the Keycloak
+From the application point of view, an EJB that should use the Keycloak
 Security Domain must embed the `@SecurityDomain("keycloak")` annotation:
 
 ```
@@ -787,6 +789,46 @@ section. The following is an example of a secured `web.xml`:
 </web-app>
 ```
 
+### Client Self-Registration
+Besides manual registration, clients can also self-register using REST API o the
+**Java Client Registration API**.
+
+The following example shows the self-registration of a client named **myclient**
+using a **POST** method:
+
+```
+curl -X POST \
+    -d '{ "clientId": "myclient" }' \
+    -H "Content-Type:application/json" \
+    -H "Authorization: bearer eyJhbGciOiJSUz..." \
+    http://localhost:8080/auth/realms/master/clients-registrations/default
+```
+
+The following portion of code demonstrates how to embed the self registration in
+a Java application using the Java Client Registration API:
+
+```
+// The bearer token used for the registration
+String token = "eyJhbGciOiJSUz...";
+
+ClientRepresentation client = new ClientRepresentation();
+client.setClientId(CLIENT_ID);
+
+ClientRegistration reg = ClientRegistration.create()
+    .url("http://localhost:8080/auth", "myrealm")
+    .build();
+
+reg.auth(Auth.token(token));
+
+client = reg.create(client);
+
+String registrationAccessToken = client.getRegistrationAccessToken();
+```
+
+The above example registers a client in the **myrealm** realm. After registration
+the `getRegistrationAccessToken()` is used to retrieve the registraion access
+token.
+
 ### Client Scopes
 Clients inherit the configured Realm **Client Scopes**. Every time a new Realm is
 created, some builtin client scopes are generated. Administrators can manage them
@@ -811,7 +853,7 @@ The following example shows a SAML client inherited scopes:
 
 #### Protocol Mappers
 When an application receives a Token or a SAML assertion it may want to receive
-some specific user metadata and roles. For example, thins like **phone**, **email**,
+some specific user metadata and roles. For example, things like **phone**, **email**,
 **verified email** can be mapped into the token or assertion.
 
 Mappers can be configure per-client for a fine grained customization or
@@ -824,7 +866,7 @@ client scopes defined for the specific protocl (OIDC/SAML).
 #### Scope Mappings
 Scope mappings define which roles mappings are included in the access token
 requested by the client. Both Realm defined Roles and Client defined Roles can
-be mapped in che Scope Mappings. This is a very useful feature to automtically
+be mapped in the Scope Mappings. This is a very useful feature to automatically
 embed specific roles in clients inheriting a client scope.
 
 ![Scope Mappings](images/client-scopes-assigned-roles.png)
