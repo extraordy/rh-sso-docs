@@ -235,3 +235,8 @@ binding to a **persistent volume**, providing data persitence across multiple
 restarts of the database pod. If special policies forbids the usage of a
 containerized database, the RH-SSO deployment can be customized to point to an
 external database.
+
+Finally, a note about load balancing. While on premise, clustered installations 
+need to configure an external load balancer, RH-SSO pods in OpenShift are 
+natively balanced by **Kubernetes Services** for intra-cluster traffic and by
+the **OpenShift Router** for external traffic.
