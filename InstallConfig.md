@@ -138,11 +138,12 @@ Domain mode offers thee different profiles, available in the configuration file
 **auth-server-standalone**, **auth-server-clustered** and **load-balancer**.  
 - the **auth-server-standalone** can be used to implement the
 domain mode without clustering.  
-- **auth-server-clustered** profile is used to run the instances in clustered
+- the **auth-server-clustered** profile is used to run the instances in clustered
 mode.  
 - the **load-balancer** profile is used to manage the load balancer instances,
-frontend of the Keycloak instances. Load balancers are not mandatory and can be
-safely disabled and replaced with external hardware or software solutions.
+which acts as the frontend for the Keycloak instances. Load balancers are not 
+mandatory and can be safely disabled and replaced with external hardware or 
+software solutions.
 
 #### Server groups
 Two server groups are defined in the `domain.xml`:
@@ -155,8 +156,8 @@ default the RH-SSO installation provides two host files already suitable for
 a PoC domain installation:
 - `.../domain/configuration/host-master.xml`. The host-master is executed in the
   domain controller and runs two server instances by default: **load-balancer**
-  and **server-one**. Users are free to remove the **load-balancer** for better
-  production environments and replace **server-one**.
+  and **server-one**. Users are free to remove the **load-balancer** in
+  production environments and/or replace the **server-one** instance.
 - `.../domain/configuration/host-slave.xml`. This file is executed by a slave
   host and runs a **server-two** instance.
 
@@ -165,7 +166,7 @@ server group.
 
 
 > **_NOTE:_** The purpose of this configurations is to provide a simple out-of-the-box scenario. For production environments an architectural planning
-> of the needed instances and their distribution is mandatory.
+> of the necessary instances and their distribution is mandatory.
 
 #### Domain Startup
 In domain mode the domain controller must be started first. To start the domain controller:
@@ -183,7 +184,7 @@ interface to a different address:
 
 The domain controller will consume the `host-master.xml` file.
 
-After the domain controller slave host can be started. If the hosts reside on
+After the domain controller, slave host can be started. If the hosts reside on
 separate machines (most common scenario) an AS user belonging to the
 **ManagementRealm** security realm must be created and its credentials added in
 the `host-slave.xml` config file. This is **NOT** a RH-SSO user but a JBoss EAP
@@ -322,7 +323,8 @@ A fresh installation should look like this:
 
 By default RH-SSO uses an H2 database whose JNDI name is the value of the
 **dataSource** property above: `java:jboss/datasources/KeycloakDS`. This
-dataSource JNDI name is the one expected by the JPA **entityManager**. In order to update the database connection the EAP `datasource` subsystem must be modified.  
+dataSource JNDI name is the one expected by the JPA **entityManager**. In order 
+to update the database connection the EAP `datasource` subsystem must be modified.  
 
 The **initializeEmpty** property tells RH-SSO to initialize the database if
 empty.
@@ -334,6 +336,14 @@ is the path where the SQL migration file should be written.
 Among the disabled properties there is one useful for debugging but very verbose
 and discouraged in production: **showSql**, to enable the logging of all SQL
 commands in console.
+
+The above example is useful to understand how SPI work. Providers are modeled 
+on top of specific Keycloak interfaces, especially the **Provider** and
+**ProviderFactory** interfaces. Provider interfaces extend those two core 
+interfaces and are implemented in core classes which define the methods logic.
+
+The [Implementing Custom Providers](CustomSPI.md) guide offers in-depth analisys 
+of SPI implementation.
 
 Providers can be easily enabled and disabled by changing the **enabled** key.
 
