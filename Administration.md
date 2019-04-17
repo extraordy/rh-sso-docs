@@ -72,7 +72,7 @@ For every realm the following tabs are displayed:
 - **General**, to configure general settings like the realm name and display name.
 - **Login**, to configure login behaviors like email verification of SSL/TLS mode.
 - **Keys**, to manage keypairs in the realm.
-- **Email**, to configure mail server settings.
+- **Email**, to configure email server settings.
 - **Themes**, to configure custom themes.
 - **Cache**, to manage Realm, User and Keys cache eviction.
 - **Tokens**, to manage token lifecycle and SSO sessions.
@@ -160,6 +160,25 @@ The **Internationalization** switch enables users to choose their language in
 every theme.
 
 ![Themes](images/themes-tab.png)
+
+#### Email configuration
+For every new realm is important to configure the email settings, which will be
+used in tasks like email verification for users, password recovery, etc.
+Go to the `Email` tab in the realm configuration and provide the following
+informations:
+- **Host**: the smtp host to use to send emails. It can be a local or external
+  service.
+- **Port**: the smtp port, defaults to 25.
+- **From Display Name**: the name visualized by recipients.
+- **From**: the valid address that will send the emails.
+- **Reply To Display Name**: the display name for the reply to feature.
+- **Reply To**: the reply to email address.
+- **Envelope From**: optional email address used for bounces.
+- **Enable SSL**: swith to enable SSL.
+- **Enable StartTLS**: switch to enable StartTLS.
+- **Enable Authentication**: swith to enable authentication on the sender's account.
+- **Username**: the sender account username.
+- **Password**: the sender account password.
 
 ### User Management
 Users can be managed by clicking in the left menu `Users` item.
