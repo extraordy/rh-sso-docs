@@ -12,11 +12,11 @@ The miminum requirements for RH SSO 7.3 are:
   production).
 - network multicast support, required for cluster mode. This is used by the
   jgroups subsystem to announce the nodes in the cluster.
-- on Linux, use `/dev/urandom` for RNG. To set this the java system property
+- on Linux, use `/dev/urandom` for RNG. To achieve this the java system property
   `java.security.egd` must be set on startup to the value `file:/dev/urandom`.
 
 ## Install modes
-There are 2 main installation modes: from zip file or from rpm. The container
+There are 2 main installation modes: from **zip** file or from **rpm**. The container
 native approach will be described later.
 
 ### Installation from Zip file
@@ -34,7 +34,8 @@ The RPM method is preferred in many cases. The **RH-SSO 7.3** and the **JBoss
 EAP 7.2** repositories must be enabled before installing.
 
 ```
-# subscription-manager repos --enable=jb-eap-7.2-for-rhel-<RHEL_VERSION>-server-rpms --enable=rhel-<RHEL_VERSION>-server-rpms
+# subscription-manager repos --enable=jb-eap-7.2-for-rhel-<RHEL_VERSION>-server-rpms \
+  --enable=rhel-<RHEL_VERSION>-server-rpms
 # subscription-manager repos --enable=rh-sso-7.3-for-rhel-<RHEL-VERSION>-server-rpms
 ```
 
@@ -74,7 +75,7 @@ There are three possible startup modes for RH-SSO:
 - **Standalone** mode, for single PoC installations and scenarios where no
   clustering is needed. Not recommended for production scenarios.
 - **Standalone clustered** mode. In this scenario different standalone
-  instances are clustered together. A share database is mandatory.
+  instances are clustered together. A shared database is mandatory.
 - **Domain clustered** mode. This approach simplifies the management of many
   instances using the JBoss EAP managed domain approach.
 
@@ -93,7 +94,7 @@ to a different address use the `-b` and - optionally - `-bmanagement` options:
 # /opt/rh-sso-7.3/bin/standalone.sh -b 0.0.0.0
 ```
 
-Sometimes it is useful to run RH-SSH with a custom port offset. To achieve this
+Sometimes it is useful to run RH-SSO with a custom port offset. To achieve this
 goal use the `-Djboss.socket.binding.port-offset` option:
 
 ```
@@ -109,7 +110,7 @@ A dedicated cache container is also enabled in the **Infinispan** subsystem.
 This mode uses the `…​/standalone/configuration/standalone-ha.xml` config file
 in the clustered instances.
 Clustered RH-SSH instances usually reside in different hosts but can be executed
-in the same host using the above mentioned port-offset approach.
+for testing purposes in the same host using the above mentioned port-offset approach.
 
 To start an instance in clustered mode:
 ```
@@ -128,7 +129,7 @@ loopback interfaces. To bind it on a different address use the `-b` and
 In domain clustered mode RH-SSO instances can be centrally managed. This is
 a key improvements versus the standalone clustered mode where the instances must
 be managed separately.  
-In domain mode a central domain controller an separated host controllers manage
+In domain mode a central domain controller and separated host controllers manage
 and run the server instances, organized in **server groups**.
 
 #### Profiles
