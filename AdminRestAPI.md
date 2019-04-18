@@ -70,6 +70,7 @@ def main():
     admin_user = 'admin'
     admin_password = 'redhat'
     connection = httplib.HTTPConnection('localhost:8080')
+    api_basepath = '/auth/admin/realms'
 
     if len(sys.argv) < 3:
         print "Not enough arguments"
@@ -82,7 +83,7 @@ def main():
         sys.exit(1)
 
     # Pass the api endpoint as second command line argument
-    api_endpoint = sys.argv[2]
+    api_endpoint = api_basepath + sys.argv[2]
 
     token = get_token(connection, admin_user, admin_password)
     json_resp = admin_api(connection, method, api_endpoint, token)
@@ -99,7 +100,7 @@ following example shows a simple GET method to view the users in the **training*
 realm:
 
 ```
-$ python admin_api_demo.py GET /auth/admin/realms/training/users
+$ python admin_api_demo.py GET /training/users
 ```
 
 This example produces an output similar to the following:
