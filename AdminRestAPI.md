@@ -95,9 +95,12 @@ if __name__ == '__main__':
   main()
 ```
 
-The above code snippet can be pasted in a python script and executed. The
-following example shows a simple GET method to view the users in the **training**
-realm:
+The above code snippet can be pasted in a python script and executed. Its
+purpose is not to provide a comprehensive tool but to demonstrate how simple can
+be the embedding of the Admin APIs.
+
+THe following usage example shows a simple GET method to view the users in the
+**training** realm:
 
 ```
 $ python admin_api_demo.py GET /training/users
